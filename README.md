@@ -8,10 +8,12 @@ Assistant to turn the configured music switch on/off.
 
 Default behavior:
 
-- Presence on after 4 seconds of stable RuView presence/motion
+- Presence on after 4 seconds above the configured score/motion thresholds
 - Music switch on: `switch.music`
 - Music switch off after 10 minutes of vacancy
 - MQTT entities under `ruview/barn`
+- Raw RuView firmware presence/motion flags are still published as attributes,
+  but do not force occupancy unless `use_firmware_flags` is enabled.
 
 Credentials are configured in Home Assistant add-on options, not in this
 repository.

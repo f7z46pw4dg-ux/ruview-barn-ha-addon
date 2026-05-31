@@ -84,6 +84,7 @@ def load_addon_options() -> None:
         "location": "RUVIEW_LOCATION",
         "presence_threshold": "RUVIEW_PRESENCE_THRESHOLD",
         "motion_threshold": "RUVIEW_MOTION_THRESHOLD",
+        "use_firmware_flags": "RUVIEW_USE_FIRMWARE_FLAGS",
         "on_seconds": "RUVIEW_ON_SECONDS",
         "off_seconds": "RUVIEW_OFF_SECONDS",
         "ha_url": "RUVIEW_HA_URL",
@@ -360,11 +361,13 @@ def publish_vitals(client: Any, args: argparse.Namespace, vitals: Vitals, presen
 
 
 def candidate_presence(vitals: Vitals, args: argparse.Namespace) -> bool:
-    if vitals.presence_flag:
+    if args.use_firmware_flags and vitals.presence_flag:
         return True
     if vitals.presence_score >= args.presence_threshold:
         return True
-    return vitals.motion_flag and vitals.motion >= args.motion_threshold
+    if args.use_firmware_flags and not vitals.motion_flag:
+        return False
+    return vitals.motion >= args.motion_threshold
 
 
 def parse_args() -> argparse.Namespace:
@@ -380,6 +383,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--location", default=env_default("RUVIEW_LOCATION", "barn"))
     parser.add_argument("--presence-threshold", type=float, default=float(env_default("RUVIEW_PRESENCE_THRESHOLD", "2.0") or "2.0"))
     parser.add_argument("--motion-threshold", type=float, default=float(env_default("RUVIEW_MOTION_THRESHOLD", "1.0") or "1.0"))
+    parser.add_argument(
+        "--use-firmware-flags",
+        action="store_true",
+        default=(env_default("RUVIEW_USE_FIRMWARE_FLAGS", "0") or "0").lower() in {"1", "true", "yes", "on"},
+        help="Let raw RuView firmware presence/motion flags trigger occupancy before threshold checks",
+    )
     parser.add_argument("--on-seconds", type=float, default=float(env_default("RUVIEW_ON_SECONDS", "4") or "4"))
     parser.add_argument("--off-seconds", type=float, default=float(env_default("RUVIEW_OFF_SECONDS", "240") or "240"))
     parser.add_argument("--ha-url", default=env_default("RUVIEW_HA_URL", "http://homeassistant.local:8123"))
