@@ -1,0 +1,40 @@
+name: RuView Barn Bridge
+version: "0.1.0"
+slug: ruview_barn_bridge
+description: Bridge RuView ESP32 barn presence to Home Assistant and the VeSync music switch
+url: https://github.com/f7z46pw4dg-ux/ruview-barn-ha-addon
+arch:
+  - amd64
+startup: services
+boot: auto
+init: false
+host_network: true
+homeassistant_api: true
+options:
+  mqtt_host: core-mosquitto
+  mqtt_port: 1883
+  mqtt_username: Jeff
+  mqtt_password: ""
+  udp_port: 5005
+  location: barn
+  control_switch: true
+  switch_entity: switch.music
+  on_seconds: 4
+  off_seconds: 600
+  presence_threshold: 2.0
+  motion_threshold: 1.0
+schema:
+  mqtt_host: str
+  mqtt_port: port
+  mqtt_username: str
+  mqtt_password: password
+  udp_port: port
+  location: str
+  control_switch: bool
+  switch_entity: str
+  on_seconds: float
+  off_seconds: float
+  presence_threshold: float
+  motion_threshold: float
+build_from:
+  amd64: ghcr.io/home-assistant/amd64-base-python:3.13-alpine3.21
