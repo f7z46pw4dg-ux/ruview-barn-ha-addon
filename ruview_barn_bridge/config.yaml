@@ -1,5 +1,5 @@
 name: RuView Barn Bridge
-version: "0.1.1"
+version: "0.1.2"
 slug: ruview_barn_bridge
 description: Bridge RuView ESP32 barn presence to Home Assistant and the VeSync music switch
 url: https://github.com/f7z46pw4dg-ux/ruview-barn-ha-addon

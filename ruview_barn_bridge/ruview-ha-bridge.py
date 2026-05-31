@@ -432,15 +432,22 @@ def main() -> None:
     sock.bind(("0.0.0.0", args.udp_port))
     sock.settimeout(1.0)
 
+    status_topic = f"{args.base_topic}/{args.location}/status"
     present = False
     previous_present = False
     first_seen_at: float | None = None
     last_seen_at: float | None = None
     last_publish = 0.0
+    last_status_publish = 0.0
     end_at = time.time() + args.seconds if args.seconds > 0 else None
     print(f"Listening for RuView vitals on UDP {args.udp_port}", flush=True)
 
     while not stop and (end_at is None or time.time() < end_at):
+        now = time.time()
+        if client and now - last_status_publish >= 30:
+            client.publish(status_topic, "online", qos=1, retain=True)
+            last_status_publish = now
+
         try:
             data, addr = sock.recvfrom(4096)
         except socket.timeout:
@@ -506,7 +513,7 @@ def main() -> None:
             last_publish = now
 
     if client:
-        client.publish(f"{args.base_topic}/{args.location}/status", "offline", qos=1, retain=True)
+        client.publish(status_topic, "offline", qos=1, retain=True)
         client.loop_stop()
         client.disconnect()
 
