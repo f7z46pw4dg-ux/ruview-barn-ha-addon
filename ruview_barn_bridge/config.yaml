@@ -1,5 +1,5 @@
 name: RuView Barn Bridge
-version: "0.1.0"
+version: "0.1.1"
 slug: ruview_barn_bridge
 description: Bridge RuView ESP32 barn presence to Home Assistant and the VeSync music switch
 url: https://github.com/f7z46pw4dg-ux/ruview-barn-ha-addon
@@ -36,5 +36,3 @@ schema:
   off_seconds: float
   presence_threshold: float
   motion_threshold: float
-build_from:
-  amd64: ghcr.io/home-assistant/amd64-base-python:3.13-alpine3.21
